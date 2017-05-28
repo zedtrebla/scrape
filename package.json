@@ -1,0 +1,28 @@
+{
+  "name": "scrape",
+  "version": "0.1.0",
+  "description": "Scrape HM",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/zedtrebla/scrape.git"
+  },
+  "author": "Bert M",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/zedtrebla/scrape/issues"
+  },
+  "homepage": "https://github.com/zedtrebla/scrape#readme",
+  "dependencies": {
+    "body-parser": "^1.17.2",
+    "cheerio": "^0.22.0",
+    "express": "^4.15.3",
+    "express-handlebars": "^3.0.0",
+    "expresss": "0.0.0",
+    "mongoose": "^4.10.2",
+    "request": "^2.81.0"
+  }
+}
