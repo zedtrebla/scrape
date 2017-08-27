@@ -1,57 +1,38 @@
 
 var express = require("express");
-var mongojs = require("mongojs");
-var request = require("request");
-var cheerio = require("cheerio");
+var mongoose = require("mongoose");
+var exphbs = require("express-handlebars");
+var bodyParser = require("body-parser");
 
 var app = express();
 
-var databaseUrl = "scraper";
-var collections = ["scrapedData"];
+var router = express.Router();
+require("./config/routes")("router");
 
-var db = mongojs(databaseUrl, collections);
-db.on("error", function(error) {
-  console.log("Database Error:", error);
+app.use(express.static(_dirname + "/public"));
+
+app.engine("handlebars", expressHandlebars({
+  defaultLayout: "main"
+}));
+
+app.set("view engine", "handlebars");
+
+app.use(bodyParser.urlencoded({
+  extended: false
+}));
+
+app.use(router);
+
+var db = process.env.MONGODB_URI || "mongodb://localhost/mongoHeadlines";
+
+mongoose.connect(db, function(error) {
+  if (error) {
+    console.log(error);
+  }
+  else {
+    console.log("mongoose connection is successful");
+  }  
 });
-
-app.get("/all", function(req, res) {
-  db.scrapedData.find({}, function(error, found) {
-    if (error) {
-      console.log(error);
-    }
-    else {
-      res.json(found);
-    }
-  });
-});
-
-app.get("/scrape", function(req, res) {
-  request("https://www.nytimes.com/", function(error, response, html) {
-    var $ = cheerio.load(html);
-    $(".title").each(function(i, element) {
-      var title = $(this).children("a").text();
-      var link = $(this).children("a").attr("href");
-
-      if (title && link) {
-        db.scrapedData.save({
-          title: title,
-          link: link
-        },
-        function(error, saved) {
-          if (error) {
-            console.log(error);
-          }
-          else {
-            console.log(saved);
-          }
-        });
-      }
-    });
-  });
-
-  res.send("Scrape Complete");
-});
-
 
 app.listen(3000, function() {
   console.log("App running on port 3000!");
